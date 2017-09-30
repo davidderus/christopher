@@ -1,4 +1,4 @@
-# Christopher v0.0.0
+# Christopher v1.0.0-alpha.1
 
 [![Build Status](https://travis-ci.org/davidderus/christopher.svg?branch=master)](https://travis-ci.org/davidderus/christopher)
 
