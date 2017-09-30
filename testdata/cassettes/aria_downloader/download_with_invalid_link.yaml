@@ -1,0 +1,28 @@
+---
+version: 1
+rwmutex: {}
+interactions:
+- request:
+    body: '{"jsonrpc":"2.0","method":"aria2.addUri","params":["token:my-good-token",["not-a-link"]],"id":6129484611666145821}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+    url: http://127.0.0.1:6800/jsonrpc
+    method: POST
+  response:
+    body: '{"id":6129484611666145821,"jsonrpc":"2.0","error":{"code":1,"message":"No
+      URI to download."}}'
+    headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - no-cache
+      Content-Type:
+      - application/json-rpc
+      Date:
+      - Sun, 02 Apr 2017 09:44:29 GMT
+      Expires:
+      - Sun, 02 Apr 2017 09:44:29 GMT
+    status: 500 Internal Server Error
+    code: 500

@@ -1,0 +1,40 @@
+[run]
+# Commands run in start
+init_cmds = [
+  ["go", "install"],
+  ["go", "build"]
+]
+
+# Watch all sub-directories
+watch_all = true
+
+# Directories to watch
+watch_dirs = ["feedwatcher", "config", "downloader", "debrider", "dispatcher", "webserver"]
+
+# Extensions to watch
+watch_exts = [".go"]
+
+# Directories to exclude from watching
+ignore = [".git", "node_modules"]
+
+# Regexps for ignoring specific notifies
+ignore_files = []
+
+# Minimal interval to Trigger build event
+build_delay = 1500
+
+# Time to wait until force kill
+interrupt_timout = 15
+
+# Wait for exit and before directly kill
+graceful_kill = false
+
+# Commands to run
+cmds = [
+  ["go", "install"],
+  ["go", "build"]
+]
+
+[sync]
+listen_addr = ":5050"
+remote_addr = ":5050"

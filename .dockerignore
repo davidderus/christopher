@@ -1,0 +1,8 @@
+.env
+.git
+*/debug.test
+testdata
+*_test.go
+.DS_Store
+Dockerfile
+docker-compose.yml
