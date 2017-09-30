@@ -1,6 +1,8 @@
 # Christopher v1.0.0-alpha.1
 
 [![Build Status](https://travis-ci.org/davidderus/christopher.svg?branch=master)](https://travis-ci.org/davidderus/christopher)
+[![Go Report Card](https://goreportcard.com/badge/github.com/davidderus/christopher)](https://goreportcard.com/report/github.com/davidderus/christopher)
+[![GoDoc](https://godoc.org/github.com/davidderus/christopher?status.svg)](https://godoc.org/github.com/davidderus/christopher)
 
 ## Description
 
