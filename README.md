@@ -1,11 +1,27 @@
 # Christopher v0.0.0
 
+[![Build Status](https://travis-ci.org/davidderus/christopher.svg?branch=master)](https://travis-ci.org/davidderus/christopher)
+
+## Description
+
+Christopher is your everyday direct-download companion.
+
+It automatically grabs new episodes from RSS feeds, debrids their URL if needed,
+and send them to a downloader service.
+
+It also offers an integrated webserver for remote URL submission and accepts
+debrid and download instruction from the command line.
+
 ## Usage
 
 ```shell
 # Starts a FeedWatcher
 christopher feed-watcher
 # shorter version: christopher fw
+
+# Runs a webserver with a simple interface to debrid and download URIs
+christopher webserver
+# shorter version: christopher ws
 
 # Debrids an URI
 christopher debrid "http://rapidgator.net/file/HTGAWM.mkv"
@@ -19,25 +35,41 @@ christopher download "https://google.fr"
 christopher debrid-download "http://rapidgator.net/file/HTGAWM.mkv"
 # shorter version: christopher dedo "http://rapidgator.net/file/HTGAWM.mkv"
 
-# Runs a webserver with a simple interface to debrid and download URIs
-christopher webserver
-# shorter version: christopher ws
-
 # Use a custom config file (default in ~/.config/christopher/config.toml)
 christopher -c ~/my/custom/config.toml […]
 ```
 
 ## Configuration
 
-See the example below for a list of the available options:
+Christopher looks for a toml configuration file at
+`$HOME/.config/christopher/config.toml`.
 
 ```toml
-# Setting a custom database path (default to ~/.config/christopher/config.toml)
-config_path = "/Users/tom/christopher/config.toml"
+# Download configuration (required)
+# The downloader is an external service Christopher pushes links to.
+[downloader]
+  # Name of the service downloading URIs
+  name = "aria2"
 
-# Setting a custom db path (default to ~/.config/christopher/database.db)
-db_path = "/Users/tom/christopher/mybase.db"
+  [downloader.auth_infos]
+    token = "my-good-token"
+    rpcURL = "http://127.0.0.1:6800/jsonrpc"
 
+# Debrider configuration (optional)
+# The debrider converts links from specific services to a downloadable link.
+# Each link sent to Christopher is first tested against each debriders
+# to see if it can be debrided.
+[debrider]
+  name = "AllDebrid"
+
+  [debrider.auth_infos]
+    username = "valid-username"
+    password = "valid-password"
+    base_url = "https://alldebrid.com"
+
+# FeedWatcher configuration (optional)
+# The feedwatcher watch some feeds and send every new links
+# to the debriders/downloader
 [feedwatcher]
   # Defining a custom watch interval in minutes (default to 30 min.)
   watch_interval = 5
@@ -51,22 +83,9 @@ db_path = "/Users/tom/christopher/mybase.db"
 
     provider = "DirectDownload"
 
-[downloader]
-  # Name of the service downloading URIs
-  name = "aria2"
-
-  [downloader.auth_infos]
-    token = "my-good-token"
-    rpcURL = "http://127.0.0.1:6800/jsonrpc"
-
-[debrider]
-  name = "AllDebrid"
-
-  [debrider.auth_infos]
-    username = "valid-username"
-    password = "valid-password"
-    base_url = "https://alldebrid.com"
-
+# Providers configuration (optional)
+# For each feed provider, you can setup some specific config like a list
+# of host to send to the debrider.
 [providers]
   # Provider config key and feed provider key must be the same
   [providers.DirectDownload]
@@ -75,6 +94,9 @@ db_path = "/Users/tom/christopher/mybase.db"
     # If not specified, the first link available is downloaded.
     favorite_hosts = ["uploaded.net", "rapidgator.net"]
 
+# WebServer configuration (optional)
+# The webserver accepts valid URLs and sent them to Christopher
+# debriders/downloader
 [webserver]
   # Setting a custom host (default to "127.0.0.1")
   host = "0.0.0.0"
@@ -106,7 +128,7 @@ db_path = "/Users/tom/christopher/mybase.db"
 
 Here is a complete list of all supported services.
 
-Do not hesitate to write a PR to add more.
+Do not hesitate to write a PR with some tests to add more.
 
 ### Providers
 
@@ -119,6 +141,15 @@ Do not hesitate to write a PR to add more.
 ### Downloaders
 
 - Aria2 (`name = "aria2" # or Aria2, aria`)
+
+## Upcoming features
+
+- [ ] A complete logger with log levels handling
+- [ ] A download history to avoid duplicates and show status in webserver
+- [ ] A successful download notifier (_push or email_)
+- [ ] A lighter Docker Image
+- [ ] A better communication between the webserver and Christopher core
+- [ ] A documentation about the dispatcher and its stories/scenarios
 
 ## Docker
 
@@ -139,7 +170,7 @@ Looking at the `docker-compose.yml` file, you will see a basic example of a
 working christopher + aria2 setup. Try it with `docker-compose up`.
 
 Remember that you need to update your christopher config file with the right
-aria2 RPC token and use `http://aria2:6800/jsonrpc` as the ` rpcURL`.
+aria2 RPC token and use `http://aria2:6800/jsonrpc` as the `rpcURL`.
 
 ## Licence
 

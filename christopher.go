@@ -12,7 +12,7 @@ var appConfigPath string
 func christopherApp() *cli.App {
 	app := cli.NewApp()
 	app.Name = "Christopher"
-	app.Usage = "A DDL Helper"
+	app.Usage = "Your everyday direct-download companion"
 	app.Version = christopherVersion
 
 	// @see commands.go
