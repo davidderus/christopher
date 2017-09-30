@@ -1,0 +1,12 @@
+builds:
+  - binary: christopher
+    goos:
+      - darwin
+      - linux
+    goarch:
+      - amd64
+      - arm
+      - arm64
+    goarm:
+      - 6
+      - 7
