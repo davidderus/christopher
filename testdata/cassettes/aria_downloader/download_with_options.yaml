@@ -1,0 +1,27 @@
+---
+version: 1
+rwmutex: {}
+interactions:
+- request:
+    body: '{"jsonrpc":"2.0","method":"aria2.addUri","params":["token:my-good-token",["http://google.fr"],{"max-overall-download-limit":"512K"}],"id":8674665223082153551}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+    url: http://127.0.0.1:6800/jsonrpc
+    method: POST
+  response:
+    body: '{"id":8674665223082153551,"jsonrpc":"2.0","result":"002eda8439d70942"}'
+    headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - no-cache
+      Content-Type:
+      - application/json-rpc
+      Date:
+      - Sun, 02 Apr 2017 10:10:14 GMT
+      Expires:
+      - Sun, 02 Apr 2017 10:10:14 GMT
+    status: 200 OK
+    code: 200

@@ -1,0 +1,76 @@
+---
+version: 1
+rwmutex: {}
+interactions:
+- request:
+    body: ""
+    form: {}
+    headers: {}
+    url: https://alldebrid.com/register/?action=login&login_login=valid-username&login_password=valid-password&returnpage=%2Faccount%2F
+    method: GET
+  response:
+    body: ""
+    headers:
+      Content-Type:
+      - text/html; charset=UTF-8
+      Date:
+      - Sun, 09 Apr 2017 10:19:17 GMT
+      Location:
+      - https://alldebrid.com/account/
+      Server:
+      - cloudflare-nginx
+      Set-Cookie:
+      - lang=en; expires=Wed, 04-Apr-2018 10:19:17 GMT; Max-Age=31104000; path=/;
+        domain=.alldebrid.com
+      - uid=000000; expires=Wed, 04-Apr-2018 10:19:17 GMT; Max-Age=31104000;
+        path=/; domain=.alldebrid.com
+    status: 302 Found
+    code: 302
+- request:
+    body: ""
+    form: {}
+    headers:
+      Cookie:
+      - lang=en; uid=000000
+      Referer:
+      - https://alldebrid.com/register/?action=login&login_login=valid-username&login_password=valid-password&returnpage=%2Faccount%2F
+    url: https://alldebrid.com/account/
+    method: GET
+  response:
+    body: ""
+    headers:
+      Content-Type:
+      - text/html; charset=UTF-8
+      Date:
+      - Sun, 09 Apr 2017 10:19:17 GMT
+      Server:
+      - cloudflare-nginx
+      Set-Cookie:
+      - ssl=1; expires=Wed, 04-Apr-2018 10:19:17 GMT; Max-Age=31104000; path=/; domain=.alldebrid.com
+      Vary:
+      - Accept-Encoding
+    status: 200 OK
+    code: 200
+- request:
+    body: ""
+    form: {}
+    headers:
+      Cookie:
+      - lang=en; uid=000000;
+        ssl=1
+    url: https://alldebrid.com/service.php?json=true&link=http%3A%2F%2Frapidgator.net%2Ffile%2FHTGAWM.mkv
+    method: GET
+  response:
+    body: '{"link":"https:\/\/subdomain.alld.io\/dl\/ABC\/HTGAWM.mkv","host":"rapidgator","filename":"HTGAWM.mkv","icon":"\/lib\/images\/hosts\/rapidgator.png","streaming":{"360p
+      unknow 0":"https:\/\/subdomain.alld.io\/utb\/ABC\/HTGAWM.%28360p%29+%28unknow+0%29.mp4"},"nb":0,"error":"","paws":true,"filesize":2377121}'
+    headers:
+      Content-Type:
+      - text/html; charset=utf-8
+      Date:
+      - Sun, 09 Apr 2017 11:06:07 GMT
+      Server:
+      - cloudflare-nginx
+      Vary:
+      - Accept-Encoding
+    status: 200 OK
+    code: 200

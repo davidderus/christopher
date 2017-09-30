@@ -1,0 +1,27 @@
+---
+version: 1
+rwmutex: {}
+interactions:
+- request:
+    body: '{"jsonrpc":"2.0","method":"aria2.tellStatus","params":["token:my-good-token","96676fbc46cbbc04"],"id":3916589616287113937}'
+    form: {}
+    headers:
+      Content-Type:
+      - application/json
+    url: http://127.0.0.1:6800/jsonrpc
+    method: POST
+  response:
+    body: '{"id":3916589616287113937,"jsonrpc":"2.0","result":{"completedLength":"0","connections":"1","dir":"\/downloads","downloadSpeed":"0","files":[{"completedLength":"0","index":"1","length":"0","path":"","selected":"true","uris":[{"status":"used","uri":"http:\/\/google.fr"},{"status":"waiting","uri":"http:\/\/google.fr"},{"status":"waiting","uri":"http:\/\/google.fr"},{"status":"waiting","uri":"http:\/\/google.fr"},{"status":"waiting","uri":"http:\/\/google.fr"},{"status":"waiting","uri":"http:\/\/google.fr"},{"status":"waiting","uri":"http:\/\/google.fr"},{"status":"waiting","uri":"http:\/\/google.fr"}]}],"gid":"96676fbc46cbbc04","numPieces":"0","pieceLength":"1048576","status":"active","totalLength":"0","uploadLength":"0","uploadSpeed":"0"}}'
+    headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - no-cache
+      Content-Type:
+      - application/json-rpc
+      Date:
+      - Sun, 02 Apr 2017 09:44:29 GMT
+      Expires:
+      - Sun, 02 Apr 2017 09:44:29 GMT
+    status: 200 OK
+    code: 200

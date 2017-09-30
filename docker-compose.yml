@@ -1,0 +1,36 @@
+---
+
+version: '2'
+services:
+  server:
+    build:
+      context: .
+    command: webserver
+    restart: always
+    ports:
+      - '8080:8080'
+    volumes:
+      - $HOME/.config/christopher/config.toml:/christopher/config.toml:ro
+    links:
+      - aria2
+
+  watcher:
+    build:
+      context: .
+    command: feed-watcher
+    restart: always
+    volumes:
+      - $HOME/.config/christopher/config.toml:/christopher/config.toml:ro
+    links:
+      - aria2
+
+  aria2:
+    image: vimagick/aria2
+    expose:
+      - "6800"
+    volumes:
+      - "$HOME/Downloads/aria2:/home/aria2"
+      - "./aria2.conf:/etc/aria2/aria2.conf"
+    environment:
+      - TOKEN=my-secret-token
+    restart: always

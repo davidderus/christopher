@@ -1,0 +1,18 @@
+{{ define "content" }}
+
+<h1>Christopher</h1>
+
+<h3>Submit links</h3>
+
+<div class="result-field"></div>
+
+<form class="download-form" action="/submit" method="post">
+
+  <div class="form-group">
+    <textarea name="download[urls]" class="form-control download-urls" required="required" rows="5"></textarea>
+  </div>
+
+  <button name="download[submit]" class="btn btn-primary">Submit</button>
+</form>
+
+{{ end }}

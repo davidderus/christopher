@@ -1,0 +1,53 @@
+---
+version: 1
+rwmutex: {}
+interactions:
+- request:
+    body: ""
+    form: {}
+    headers: {}
+    url: https://alldebrid.com/register/?action=login&login_login=valid-username&login_password=valid-password&returnpage=%2Faccount%2F
+    method: GET
+  response:
+    body: ""
+    headers:
+      Content-Type:
+      - text/html; charset=UTF-8
+      Date:
+      - Sun, 09 Apr 2017 10:19:17 GMT
+      Location:
+      - https://alldebrid.com/account/
+      Server:
+      - cloudflare-nginx
+      Set-Cookie:
+      - lang=en; expires=Wed, 04-Apr-2018 10:19:17 GMT; Max-Age=31104000; path=/;
+        domain=.alldebrid.com
+      - uid=000000; expires=Wed, 04-Apr-2018 10:19:17 GMT; Max-Age=31104000;
+        path=/; domain=.alldebrid.com
+    status: 302 Found
+    code: 302
+- request:
+    body: ""
+    form: {}
+    headers:
+      Cookie:
+      - lang=en; uid=000000
+      Referer:
+      - https://alldebrid.com/register/?action=login&login_login=valid-username&login_password=valid-password&returnpage=%2Faccount%2F
+    url: https://alldebrid.com/account/
+    method: GET
+  response:
+    body: ""
+    headers:
+      Content-Type:
+      - text/html; charset=UTF-8
+      Date:
+      - Sun, 09 Apr 2017 10:19:17 GMT
+      Server:
+      - cloudflare-nginx
+      Set-Cookie:
+      - ssl=1; expires=Wed, 04-Apr-2018 10:19:17 GMT; Max-Age=31104000; path=/; domain=.alldebrid.com
+      Vary:
+      - Accept-Encoding
+    status: 200 OK
+    code: 200
