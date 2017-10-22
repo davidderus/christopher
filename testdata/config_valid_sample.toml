@@ -30,3 +30,6 @@ db_path = "/Users/tom/christopher/mybase.db"
   [[webserver.users]]
   name = "johndoe"
   password = "6e82c19cf08634bcb89b9fc8a36e288b"
+
+[teller]
+  log_level = "debug"

@@ -25,6 +25,12 @@ const (
 
 	// defaultAuthRealm is the default realm used for the web server digest authentication
 	defaultAuthRealm = "christopher.local"
+
+	// defaultLogLevel sets the minimum level for logging infos
+	defaultLogLevel = "error"
+
+	// defaultLogFormatter sets the log items formatter
+	defaultLogFormatter = "text"
 )
 
 // Feed is a Feed Representation
@@ -82,6 +88,18 @@ type WebServerOptions struct {
 	Users []webUser
 }
 
+// TellerOptions defines logging options for the Teller
+type TellerOptions struct {
+	// LogLevel is a level from when the Teller must log things
+	LogLevel string `toml:"log_level"`
+
+	// LogOutput is a writer where to output log items
+	LogOutput string `toml:"log_output"`
+
+	// LogFormatter is the log items format
+	LogFormatter string `toml:"log_formatter"`
+}
+
 // Config defines the Christopher configuration
 type Config struct {
 	configPath string `toml:"config_path"`
@@ -96,6 +114,8 @@ type Config struct {
 	Providers map[string]ProviderOptions
 
 	WebServer WebServerOptions
+
+	Teller TellerOptions
 }
 
 // Load loads config from the default config path
@@ -173,4 +193,7 @@ func (c *Config) setDefaults() {
 	c.WebServer.Host = defaultHost
 	c.WebServer.Port = defaultPort
 	c.WebServer.AuthRealm = defaultAuthRealm
+
+	c.Teller.LogLevel = defaultLogLevel
+	c.Teller.LogFormatter = defaultLogFormatter
 }

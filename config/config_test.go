@@ -80,6 +80,11 @@ var _ = Describe("Config", func() {
 				webserverUsers := webserverConfig.Users
 				Expect(len(webserverUsers)).To(Equal(1))
 				Expect(webserverUsers[0].Name).To(Equal("johndoe"))
+
+				By("Reading log output format")
+				tellerConfig := config.Teller
+				Expect(tellerConfig.LogLevel).To(Equal("debug"))
+				Expect(tellerConfig.LogFormatter).To(Equal("text"))
 			})
 
 			It("should set some defaults for the missing values", func() {
