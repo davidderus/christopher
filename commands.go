@@ -8,13 +8,41 @@ import (
 	"github.com/davidderus/christopher/config"
 	"github.com/davidderus/christopher/dispatcher"
 	"github.com/davidderus/christopher/feedwatcher"
+	"github.com/davidderus/christopher/teller"
 	"github.com/davidderus/christopher/webserver"
 	"github.com/urfave/cli"
 )
 
 var (
 	appConfig *config.Config
+	appTeller *teller.Teller
 )
+
+func loadRequirements() error {
+	configError := loadConfig()
+
+	if configError != nil {
+		return configError
+	}
+
+	loadTeller()
+
+	return nil
+}
+
+func loadConfig() error {
+	config, configError := config.LoadFromFile(appConfigPath)
+	if configError != nil {
+		return configError
+	}
+
+	appConfig = config
+	return nil
+}
+
+func loadTeller() {
+	appTeller = teller.NewTeller(appConfig.Teller.LogLevel, appConfig.Teller.LogFormatter)
+}
 
 //////////////
 // Debrider //
@@ -36,9 +64,10 @@ func runDebrider(ctx *cli.Context) error {
 		return cli.NewExitError("No URI given", 1)
 	}
 
-	appConfig, configError := config.LoadFromFile(appConfigPath)
-	if configError != nil {
-		return cli.NewExitError(configError.Error(), 1)
+	// Loading command requirements
+	loadError := loadRequirements()
+	if loadError != nil {
+		return cli.NewExitError(loadError.Error(), 1)
 	}
 
 	event := &dispatcher.Event{Origin: "cli", Value: uri}
@@ -82,9 +111,10 @@ func runDownloader(ctx *cli.Context) error {
 		return cli.NewExitError("No URI given", 1)
 	}
 
-	appConfig, configError := config.LoadFromFile(appConfigPath)
-	if configError != nil {
-		return cli.NewExitError(configError.Error(), 1)
+	// Loading command requirements
+	loadError := loadRequirements()
+	if loadError != nil {
+		return cli.NewExitError(loadError.Error(), 1)
 	}
 
 	event := &dispatcher.Event{Origin: "cli", Value: uri}
@@ -134,9 +164,10 @@ func downloadAndDebrid(ctx *cli.Context) error {
 		return cli.NewExitError("No URI given", 1)
 	}
 
-	appConfig, configError := config.LoadFromFile(appConfigPath)
-	if configError != nil {
-		return cli.NewExitError(configError.Error(), 1)
+	// Loading command requirements
+	loadError := loadRequirements()
+	if loadError != nil {
+		return cli.NewExitError(loadError.Error(), 1)
 	}
 
 	event := &dispatcher.Event{Origin: "cli", Value: uri}
@@ -179,10 +210,10 @@ var FeedWatcherCli = cli.Command{
 }
 
 func runFeedWatcher(ctx *cli.Context) error {
-	// Loading config
-	appConfig, configError := config.LoadFromFile(appConfigPath)
-	if configError != nil {
-		return cli.NewExitError(configError.Error(), 1)
+	// Loading command requirements
+	loadError := loadRequirements()
+	if loadError != nil {
+		return cli.NewExitError(loadError.Error(), 1)
 	}
 
 	// Building FeedWatcher from config
@@ -258,10 +289,10 @@ var WebServerCli = cli.Command{
 }
 
 func runWebServer(ctx *cli.Context) error {
-	// Loading config
-	appConfig, configError := config.LoadFromFile(appConfigPath)
-	if configError != nil {
-		return cli.NewExitError(configError.Error(), 1)
+	// Loading command requirements
+	loadError := loadRequirements()
+	if loadError != nil {
+		return cli.NewExitError(loadError.Error(), 1)
 	}
 
 	webServer := webserver.NewWebServer(appConfig)
