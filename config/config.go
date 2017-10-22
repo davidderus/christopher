@@ -93,9 +93,6 @@ type TellerOptions struct {
 	// LogLevel is a level from when the Teller must log things
 	LogLevel string `toml:"log_level"`
 
-	// LogOutput is a writer where to output log items
-	LogOutput string `toml:"log_output"`
-
 	// LogFormatter is the log items format
 	LogFormatter string `toml:"log_formatter"`
 }

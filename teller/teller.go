@@ -50,7 +50,7 @@ func (t *Teller) SetLogFormatter(logFormatter string) {
 	case "json":
 		t.logger.Formatter = &log.JSONFormatter{}
 	default:
-		t.logger.Formatter = &log.TextFormatter{}
+		t.logger.Formatter = &log.TextFormatter{FullTimestamp: true}
 	}
 }
 
