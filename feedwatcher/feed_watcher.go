@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/davidderus/christopher/dispatcher"
+	"github.com/davidderus/christopher/teller"
 )
 
 // FeedWatcher is the main process struct
@@ -17,6 +18,7 @@ type FeedWatcher struct {
 	Scenario  *dispatcher.Scenario
 
 	interval time.Duration
+	teller   *teller.Teller
 }
 
 // NewFeedWatcher returns a FeedWatcher for a given time interval
@@ -52,7 +54,7 @@ func (fw *FeedWatcher) NewLinks(sinceDate time.Time) ([]string, error) {
 	newLinksChan := make(chan []string, feedsCount)
 	defer close(newLinksChan)
 
-	errorMessages := make([]string, feedsCount)
+	var errorMessages []string
 	errorsMessagesChan := make(chan string, feedsCount)
 	defer close(errorsMessagesChan)
 
@@ -67,7 +69,7 @@ func (fw *FeedWatcher) NewLinks(sinceDate time.Time) ([]string, error) {
 		case newItemsLinks := <-newLinksChan:
 			newLinks = append(newLinks, newItemsLinks...)
 		case newError := <-errorsMessagesChan:
-			errorMessages[feedIndex] = newError
+			errorMessages = append(errorMessages, newError)
 		}
 	}
 
@@ -109,7 +111,8 @@ func (fw *FeedWatcher) processNewLinks(sinceDate time.Time) (int, error) {
 //
 // If run is stopped (maxRunCount > 0), then it return a summary of the run
 func (fw *FeedWatcher) Run(maxRunCount int) (string, error) {
-	if len(fw.Feeds) == 0 {
+	feedsCount := len(fw.Feeds)
+	if feedsCount == 0 {
 		return "", errors.New("No feeds in config")
 	}
 
@@ -126,13 +129,19 @@ func (fw *FeedWatcher) Run(maxRunCount int) (string, error) {
 	// TODO replace by previous launch time
 	sinceDate := fw.SinceDate
 
+	fw.teller.LogWithFields(map[string]interface{}{
+		"feedsCount":  feedsCount,
+		"interval":    fw.interval,
+		"maxRunCount": maxRunCount,
+		"sinceDate":   fw.SinceDate,
+	}).Infoln("Starting FeedWatcher")
+
 	// Starts a new go routine every tick to get new links
 	for _ = range tick {
-		newItemsCount, _ := fw.processNewLinks(sinceDate)
-		// TODO We may have some errors
-		// if newItemErrors != nil {
-		//	log.Printf("Error: %s", newItemErrors)
-		//}
+		newItemsCount, newItemErrors := fw.processNewLinks(sinceDate)
+		if newItemErrors != nil {
+			fw.teller.Log().WithField("errors", newItemErrors).Errorln("Error with new items")
+		}
 
 		// But also some success
 		newItemsTotal += newItemsCount
@@ -141,11 +150,20 @@ func (fw *FeedWatcher) Run(maxRunCount int) (string, error) {
 		sinceDate = time.Now()
 		runCount++
 
+		fw.teller.Log().WithField("runCount", runCount).Infof("%d new items found", newItemsCount)
+
 		// Except if a given limit is reached
 		if hasLimit && runCount == maxRunCount {
+			fw.teller.Log().Debugln("Reaching maxRunCount, breaking!")
 			break
 		}
 	}
 
 	return fmt.Sprintf("%d runs done, %d items found", runCount, newItemsTotal), nil
+}
+
+// SetTeller defines the teller used to report the feed watcher adventures
+func (fw *FeedWatcher) SetTeller(teller *teller.Teller) *FeedWatcher {
+	fw.teller = teller
+	return fw
 }

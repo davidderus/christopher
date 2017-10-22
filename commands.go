@@ -222,6 +222,9 @@ func runFeedWatcher(ctx *cli.Context) error {
 		appTeller.Log().Fatalln(feedWatcherError)
 	}
 
+	// Adding Teller
+	feedWatcher.SetTeller(appTeller)
+
 	// Getting feeds
 	configFeeds := feedWatcherConfig.Feeds
 	feedWatcherFeeds := make([]feedwatcher.RemoteFeed, len(configFeeds))
@@ -254,7 +257,6 @@ func runFeedWatcher(ctx *cli.Context) error {
 	feedWatcher.Scenario = scenario
 
 	// Running FeedWatcher for eternity
-	appTeller.Log().Infoln("Starting FeedWatcher")
 	runSummary, runError := feedWatcher.Run(0)
 
 	// Handling run errors
