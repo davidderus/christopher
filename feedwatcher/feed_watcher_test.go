@@ -154,7 +154,7 @@ var _ = Describe("FeedWatcher", func() {
 			feedWatcher, _ := NewFeedWatcher(1 * time.Microsecond)
 			_, runError := feedWatcher.Run(1)
 
-			Expect(runError.Error()).To(Equal("Error: No feeds in config"))
+			Expect(runError.Error()).To(Equal("No feeds in config"))
 		})
 	})
 })

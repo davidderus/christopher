@@ -22,7 +22,7 @@ type FeedWatcher struct {
 // NewFeedWatcher returns a FeedWatcher for a given time interval
 func NewFeedWatcher(interval time.Duration) (*FeedWatcher, error) {
 	if interval == 0 {
-		return nil, errors.New("Error: invalid interval")
+		return nil, errors.New("Invalid interval")
 	}
 
 	feedWatcher := &FeedWatcher{}
@@ -110,11 +110,11 @@ func (fw *FeedWatcher) processNewLinks(sinceDate time.Time) (int, error) {
 // If run is stopped (maxRunCount > 0), then it return a summary of the run
 func (fw *FeedWatcher) Run(maxRunCount int) (string, error) {
 	if len(fw.Feeds) == 0 {
-		return "", errors.New("Error: No feeds in config")
+		return "", errors.New("No feeds in config")
 	}
 
 	if fw.SinceDate.IsZero() {
-		return "", errors.New("Error: invalid SinceDate")
+		return "", errors.New("Invalid SinceDate")
 	}
 
 	hasLimit := maxRunCount > 0
