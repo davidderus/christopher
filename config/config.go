@@ -27,7 +27,7 @@ const (
 	defaultAuthRealm = "christopher.local"
 
 	// defaultLogLevel sets the minimum level for logging infos
-	defaultLogLevel = "error"
+	defaultLogLevel = "info"
 
 	// defaultLogFormatter sets the log items formatter
 	defaultLogFormatter = "text"

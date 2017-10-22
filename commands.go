@@ -73,6 +73,7 @@ func runDebrider(ctx *cli.Context) error {
 
 	story := &dispatcher.ChristopherStory{}
 	story.SetConfig(appConfig).EnableDebrider()
+	story.SetTeller(appTeller)
 
 	scenario := story.Scenario()
 
@@ -121,6 +122,7 @@ func runDownloader(ctx *cli.Context) error {
 	// story without debrider
 	story := &dispatcher.ChristopherStory{}
 	story.SetConfig(appConfig).EnableDownloader()
+	story.SetTeller(appTeller)
 
 	// Setting a custom notifier
 	story.SetNotifier(func(event *dispatcher.Event) error {
@@ -176,16 +178,7 @@ func downloadAndDebrid(ctx *cli.Context) error {
 
 	story := &dispatcher.ChristopherStory{}
 	story.SetConfig(appConfig).EnableDebrider().EnableDownloader()
-
-	// Setting a custom notifier
-	story.SetNotifier(func(event *dispatcher.Event) error {
-		appTeller.LogWithFields(map[string]interface{}{
-			"downloadID":      event.Value,
-			"downloadHandler": appConfig.Downloader.Name,
-		}).Infoln("Download started")
-
-		return nil
-	})
+	story.SetTeller(appTeller)
 
 	scenario := story.Scenario()
 
@@ -253,16 +246,7 @@ func runFeedWatcher(ctx *cli.Context) error {
 	// Using default story to process new links
 	story := &dispatcher.ChristopherStory{}
 	story.SetConfig(appConfig).EnableDebrider().EnableDownloader()
-
-	// Setting a custom log notifier
-	story.SetNotifier(func(event *dispatcher.Event) error {
-		appTeller.LogWithFields(map[string]interface{}{
-			"downloadID":      event.Value,
-			"downloadHandler": appConfig.Downloader.Name,
-		}).Infoln("Download started")
-
-		return nil
-	})
+	story.SetTeller(appTeller)
 
 	scenario := story.Scenario()
 	scenario.SetInitialStep("config")
