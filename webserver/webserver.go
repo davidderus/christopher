@@ -55,7 +55,7 @@ func (ws *WebServer) Start() error {
 		ReadTimeout:  15 * time.Second,
 	}
 
-	fmt.Printf("Starting webserver on %s\n", webServerAddress)
+	ws.appTeller.Log().Infof("Starting webserver on %s", webServerAddress)
 	return server.ListenAndServe()
 }
 
