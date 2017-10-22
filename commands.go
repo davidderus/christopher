@@ -24,8 +24,8 @@ var (
 var DebriderCli = cli.Command{
 	Name:        "debrid",
 	Aliases:     []string{"de"},
-	Usage:       "Debrid an URI",
-	Description: "Send a URI to the debrider and return a debrided URI.",
+	Usage:       "Debrids an URI",
+	Description: "Sends an URI to the debrider and return a debrided URI.",
 	Action:      runDebrider,
 	ArgsUsage:   "<URI>",
 }
@@ -70,8 +70,8 @@ func runDebrider(ctx *cli.Context) error {
 var DownloaderCli = cli.Command{
 	Name:        "download",
 	Aliases:     []string{"do"},
-	Usage:       "Send an URI to the downloader",
-	Description: "Send a URI to the downloader set in config.",
+	Usage:       "Sends an URI to the downloader",
+	Description: "Sends a URI to the downloader set in the config file.",
 	Action:      runDownloader,
 	ArgsUsage:   "<URI>",
 }
@@ -123,8 +123,8 @@ var DownloadAndDebridCli = cli.Command{
 	Name:        "debrid-download",
 	Action:      downloadAndDebrid,
 	Aliases:     []string{"dedo"},
-	Usage:       "Debrid and download an URI",
-	Description: "If debrider is able to handle URI, it will be debrided and then sent to downloader. Otherwise, it will only be downloaded.",
+	Usage:       "Debrids and downloads an URI",
+	Description: "If debrider is able to handle the URI, it will be debrided and then sent to downloader. Otherwise, it will only be downloaded.",
 	ArgsUsage:   "<URI>",
 }
 
@@ -173,7 +173,7 @@ func downloadAndDebrid(ctx *cli.Context) error {
 var FeedWatcherCli = cli.Command{
 	Name:        "feed-watcher",
 	Aliases:     []string{"fw"},
-	Usage:       "Start feed watcher",
+	Usage:       "Starts the feed watcher",
 	Description: "Watch the feeds defined in configuration and send all links to the right service.",
 	Action:      runFeedWatcher,
 }
