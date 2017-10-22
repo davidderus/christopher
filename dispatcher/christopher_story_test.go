@@ -3,6 +3,7 @@ package dispatcher_test
 import (
 	"bytes"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/davidderus/christopher/config"
@@ -31,18 +32,15 @@ var _ = Describe("ChristopherStory", func() {
 	var story *ChristopherStory
 	var appConfig *config.Config
 	var defaultHTTPTransport http.RoundTripper
-	var logBuffer *bytes.Buffer
 	var tellerInstance *teller.Teller
 
 	BeforeEach(func() {
 		defaultHTTPTransport = http.DefaultTransport
 		appConfig, _ = config.LoadFromFile(validConfigSampleFile)
 
-		logBuffer = &bytes.Buffer{}
-
 		// Getting logger
 		tellerInstance = teller.NewTeller("debug", "text")
-		tellerInstance.SetLogOutput(logBuffer)
+		tellerInstance.SetLogOutput(ioutil.Discard)
 	})
 
 	// Resetting http.DefaultTransport to initial value to avoid messing with
@@ -206,6 +204,8 @@ var _ = Describe("ChristopherStory", func() {
 			story.SetConfig(appConfig).EnableDebrider().EnableDownloader()
 
 			By("Setting up the teller")
+			logBuffer := &bytes.Buffer{}
+			tellerInstance.SetLogOutput(logBuffer)
 			story.SetTeller(tellerInstance)
 
 			By("By playing the scenario")
