@@ -29,7 +29,7 @@ func getRecorder(cassette string) *recorder.Recorder {
 func getClientForCassette(cassette string) (*Aria2, *recorder.Recorder) {
 	authInfos := make(map[string]interface{})
 	authInfos["token"] = RpcToken
-	authInfos["rpcURL"] = validRpcURL
+	authInfos["rpc_url"] = validRpcURL
 
 	testRecorder := getRecorder(cassette)
 	ariaDownloader := &Aria2{CustomTransport: testRecorder}
@@ -48,7 +48,7 @@ var _ = Describe("Aria2", func() {
 			It("Should log the user in", func() {
 				authInfos := make(map[string]interface{})
 				authInfos["token"] = RpcToken
-				authInfos["rpcURL"] = validRpcURL
+				authInfos["rpc_url"] = validRpcURL
 
 				ariaDownloader := &Aria2{}
 				authError := ariaDownloader.Auth(authInfos)
@@ -61,7 +61,7 @@ var _ = Describe("Aria2", func() {
 			It("Should return an error on missing token", func() {
 				authInfos := make(map[string]interface{})
 				authInfos["token"] = 12121
-				authInfos["rpcURL"] = validRpcURL
+				authInfos["rpc_url"] = validRpcURL
 
 				ariaDownloader := &Aria2{}
 				authError := ariaDownloader.Auth(authInfos)
@@ -72,7 +72,7 @@ var _ = Describe("Aria2", func() {
 			It("Should not return an error on missing token", func() {
 				authInfos := make(map[string]interface{})
 				authInfos["token"] = ""
-				authInfos["rpcURL"] = validRpcURL
+				authInfos["rpc_url"] = validRpcURL
 
 				ariaDownloader := &Aria2{}
 				authError := ariaDownloader.Auth(authInfos)
@@ -83,7 +83,7 @@ var _ = Describe("Aria2", func() {
 			It("Should return an error on missing url", func() {
 				authInfos := make(map[string]interface{})
 				authInfos["token"] = RpcToken
-				authInfos["rpcURL"] = ""
+				authInfos["rpc_url"] = ""
 
 				ariaDownloader := &Aria2{}
 				authError := ariaDownloader.Auth(authInfos)

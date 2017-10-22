@@ -38,7 +38,7 @@ const (
 func (ad *Aria2) Auth(infos map[string]interface{}) error {
 	var rpcURLOkay, tokenOkay bool
 
-	ad.rpcURL, rpcURLOkay = infos["rpcURL"].(string)
+	ad.rpcURL, rpcURLOkay = infos["rpc_url"].(string)
 	if !rpcURLOkay || ad.rpcURL == "" {
 		return errors.New("Invalid RPC url")
 	}
