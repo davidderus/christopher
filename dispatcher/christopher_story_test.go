@@ -1,11 +1,13 @@
 package dispatcher_test
 
 import (
+	"bytes"
 	"fmt"
 	"net/http"
 
 	"github.com/davidderus/christopher/config"
 	. "github.com/davidderus/christopher/dispatcher"
+	"github.com/davidderus/christopher/teller"
 
 	"github.com/dnaeon/go-vcr/recorder"
 
@@ -29,10 +31,18 @@ var _ = Describe("ChristopherStory", func() {
 	var story *ChristopherStory
 	var appConfig *config.Config
 	var defaultHTTPTransport http.RoundTripper
+	var logBuffer *bytes.Buffer
+	var tellerInstance *teller.Teller
 
 	BeforeEach(func() {
 		defaultHTTPTransport = http.DefaultTransport
 		appConfig, _ = config.LoadFromFile(validConfigSampleFile)
+
+		logBuffer = &bytes.Buffer{}
+
+		// Getting logger
+		tellerInstance = teller.NewTeller("debug", "text")
+		tellerInstance.SetLogOutput(logBuffer)
 	})
 
 	// Resetting http.DefaultTransport to initial value to avoid messing with
@@ -54,6 +64,7 @@ var _ = Describe("ChristopherStory", func() {
 
 				story = &ChristopherStory{}
 				story.SetConfig(appConfig).EnableDownloader()
+				story.SetTeller(tellerInstance)
 
 				scenario := story.Scenario()
 				scenario.SetInitialStep("config")
@@ -79,6 +90,7 @@ var _ = Describe("ChristopherStory", func() {
 
 				story = &ChristopherStory{}
 				story.SetConfig(appConfig).EnableDebrider().EnableDownloader()
+				story.SetTeller(tellerInstance)
 
 				scenario := story.Scenario()
 				scenario.SetInitialStep("config")
@@ -105,6 +117,7 @@ var _ = Describe("ChristopherStory", func() {
 
 				story = &ChristopherStory{}
 				story.SetConfig(appConfig).EnableDebrider().EnableDownloader()
+				story.SetTeller(tellerInstance)
 
 				scenario := story.Scenario()
 				scenario.SetInitialStep("config")
@@ -122,6 +135,7 @@ var _ = Describe("ChristopherStory", func() {
 			It("should work", func() {
 				story = &ChristopherStory{}
 				story.SetConfig(appConfig).EnableDebrider().EnableDownloader()
+				story.SetTeller(tellerInstance)
 
 				scenario := story.Scenario()
 
@@ -167,6 +181,7 @@ var _ = Describe("ChristopherStory", func() {
 			event := &Event{Origin: "test", Value: "http://google.fr"}
 			story = &ChristopherStory{}
 			story.SetConfig(appConfig)
+			story.SetTeller(tellerInstance)
 
 			scenario := story.Scenario()
 			scenario.SetInitialStep("config")
@@ -175,6 +190,41 @@ var _ = Describe("ChristopherStory", func() {
 			Expect(scenario.RunError()).To(BeNil())
 			Expect(event.Value).To(Equal("http://google.fr"))
 			Expect(event.Origin).To(Equal("test"))
+		})
+	})
+
+	Context("with a logger", func() {
+		It("should log some things", func() {
+			By("Configuring the story")
+			testRecorder := getRecorder("debrider_and_downloader")
+			// NOTE May not be a good idea
+			http.DefaultTransport = testRecorder
+
+			event := &Event{Origin: "test", Value: "http://rapidgator.net/file/08987898765/HTGAWM.mkv"}
+
+			story = &ChristopherStory{}
+			story.SetConfig(appConfig).EnableDebrider().EnableDownloader()
+
+			By("Setting up the teller")
+			story.SetTeller(tellerInstance)
+
+			By("By playing the scenario")
+			scenario := story.Scenario()
+			scenario.SetInitialStep("config")
+			scenario.Play(event)
+
+			logString := logBuffer.String()
+
+			Expect(scenario.RunError()).To(BeNil())
+			Expect(logString).To(ContainSubstring(`level=debug msg="Enabling downloader"`))
+			Expect(logString).To(ContainSubstring(`level=debug msg="Enabling debrider"`))
+			Expect(logString).To(ContainSubstring(`level=debug msg="Loading config"`))
+
+			Expect(logString).To(ContainSubstring(`level=info msg="URI is debridable" debridHandler=AllDebrid initialURI="http://rapidgator.net/file/08987898765/HTGAWM.mkv"`))
+
+			Expect(logString).To(ContainSubstring(`level=debug msg="URI is debrided" debridHandler=AllDebrid debridURI="https://subdomain.alld.io/dl/ABC/HTGAWM.mkv" initialURI="http://rapidgator.net/file/08987898765/HTGAWM.mkv"`))
+
+			Expect(logString).To(ContainSubstring(`level=info msg="Download started" downloadHandler=aria2 downloadID=96676fbc46cbbaaz downloadOptions=map[] downloadURI="https://subdomain.alld.io/dl/ABC/HTGAWM.mkv"`))
 		})
 	})
 })
