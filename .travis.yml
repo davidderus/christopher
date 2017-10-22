@@ -8,3 +8,9 @@ go:
   - 1.x
 
 script: go test -v ./...
+
+deploy:
+  provider: script
+  script: scripts/deploy.sh
+  on:
+    branch: master
