@@ -11,6 +11,7 @@ import (
 	auth "github.com/abbot/go-http-auth"
 	"github.com/davidderus/christopher/config"
 	"github.com/davidderus/christopher/dispatcher"
+	"github.com/davidderus/christopher/teller"
 	"github.com/gorilla/csrf"
 	"github.com/gorilla/mux"
 )
@@ -18,6 +19,7 @@ import (
 // WebServer defines a basic HTTP WebServer
 type WebServer struct {
 	appConfig     *config.Config
+	appTeller     *teller.Teller
 	options       *config.WebServerOptions
 	authenticator *auth.DigestAuth
 	scenario      *dispatcher.Scenario
@@ -93,9 +95,10 @@ func (ws *WebServer) buildRouter() {
 }
 
 // NewWebServer instanciates a web server
-func NewWebServer(appConfig *config.Config) *WebServer {
+func NewWebServer(appConfig *config.Config, appTeller *teller.Teller) *WebServer {
 	server := &WebServer{}
 	server.appConfig = appConfig
+	server.appTeller = appTeller
 	server.options = &appConfig.WebServer
 
 	return server

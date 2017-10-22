@@ -287,7 +287,7 @@ func runWebServer(ctx *cli.Context) error {
 		return cli.NewExitError(loadError.Error(), 1)
 	}
 
-	webServer := webserver.NewWebServer(appConfig)
+	webServer := webserver.NewWebServer(appConfig, appTeller)
 
 	appTeller.Log().Fatalln(webServer.Start())
 

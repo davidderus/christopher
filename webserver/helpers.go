@@ -37,6 +37,7 @@ func (ws *WebServer) writeWithTemplate(response http.ResponseWriter, templateNam
 func (ws *WebServer) loadScenario() *dispatcher.Scenario {
 	story := &dispatcher.ChristopherStory{}
 	story.SetConfig(ws.appConfig).EnableDebrider().EnableDownloader()
+	story.SetTeller(ws.appTeller)
 
 	scenario := story.Scenario()
 	scenario.SetInitialStep("config")
