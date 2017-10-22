@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v1.0.0-alpha.2 - 2017/10/22
 
 - Renaming config key `rpcURL` to `rpc_url` for consistency
 - Introducing Teller, a text/json logger
