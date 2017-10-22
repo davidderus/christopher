@@ -1,6 +1,6 @@
 {
 	"ImportPath": "github.com/davidderus/christopher",
-	"GoVersion": "go1.8",
+	"GoVersion": "go1.9",
 	"GodepVersion": "v79",
 	"Packages": [
 		"./..."
@@ -239,6 +239,11 @@
 			"ImportPath": "github.com/pkg/errors",
 			"Comment": "v0.8.0-1-g839d9e9",
 			"Rev": "839d9e913e063e28dfd0e6c7b7512793e0a48be9"
+		},
+		{
+			"ImportPath": "github.com/sirupsen/logrus",
+			"Comment": "v1.0.0-2-g3d4380f",
+			"Rev": "3d4380f53a34dcdc95f0c1db702615992b38d9a4"
 		},
 		{
 			"ImportPath": "github.com/urfave/cli",

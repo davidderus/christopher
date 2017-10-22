@@ -2,19 +2,46 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/davidderus/christopher/config"
 	"github.com/davidderus/christopher/dispatcher"
 	"github.com/davidderus/christopher/feedwatcher"
+	"github.com/davidderus/christopher/teller"
 	"github.com/davidderus/christopher/webserver"
 	"github.com/urfave/cli"
 )
 
 var (
 	appConfig *config.Config
+	appTeller *teller.Teller
 )
+
+func loadRequirements() error {
+	configError := loadConfig()
+
+	if configError != nil {
+		return configError
+	}
+
+	loadTeller()
+
+	return nil
+}
+
+func loadConfig() error {
+	config, configError := config.LoadFromFile(appConfigPath)
+	if configError != nil {
+		return configError
+	}
+
+	appConfig = config
+	return nil
+}
+
+func loadTeller() {
+	appTeller = teller.NewTeller(appConfig.Teller.LogLevel, appConfig.Teller.LogFormatter)
+}
 
 //////////////
 // Debrider //
@@ -31,20 +58,22 @@ var DebriderCli = cli.Command{
 }
 
 func runDebrider(ctx *cli.Context) error {
-	uri := ctx.Args().First()
-	if uri == "" {
-		return cli.NewExitError("No URI given", 1)
+	// Loading command requirements
+	loadError := loadRequirements()
+	if loadError != nil {
+		return cli.NewExitError(loadError.Error(), 1)
 	}
 
-	appConfig, configError := config.LoadFromFile(appConfigPath)
-	if configError != nil {
-		return cli.NewExitError(configError.Error(), 1)
+	uri := ctx.Args().First()
+	if uri == "" {
+		appTeller.Log().Fatalln("No URI given")
 	}
 
 	event := &dispatcher.Event{Origin: "cli", Value: uri}
 
 	story := &dispatcher.ChristopherStory{}
 	story.SetConfig(appConfig).EnableDebrider()
+	story.SetTeller(appTeller)
 
 	scenario := story.Scenario()
 
@@ -54,7 +83,7 @@ func runDebrider(ctx *cli.Context) error {
 
 	runError := scenario.RunError()
 	if runError != nil {
-		return cli.NewExitError(runError.Error(), 2)
+		appTeller.Log().Fatalln(runError)
 	}
 
 	fmt.Print(event.Value)
@@ -77,14 +106,15 @@ var DownloaderCli = cli.Command{
 }
 
 func runDownloader(ctx *cli.Context) error {
-	uri := ctx.Args().First()
-	if uri == "" {
-		return cli.NewExitError("No URI given", 1)
+	// Loading command requirements
+	loadError := loadRequirements()
+	if loadError != nil {
+		return cli.NewExitError(loadError.Error(), 1)
 	}
 
-	appConfig, configError := config.LoadFromFile(appConfigPath)
-	if configError != nil {
-		return cli.NewExitError(configError.Error(), 1)
+	uri := ctx.Args().First()
+	if uri == "" {
+		appTeller.Log().Fatalln("No URI given")
 	}
 
 	event := &dispatcher.Event{Origin: "cli", Value: uri}
@@ -92,10 +122,14 @@ func runDownloader(ctx *cli.Context) error {
 	// story without debrider
 	story := &dispatcher.ChristopherStory{}
 	story.SetConfig(appConfig).EnableDownloader()
+	story.SetTeller(appTeller)
 
 	// Setting a custom notifier
 	story.SetNotifier(func(event *dispatcher.Event) error {
-		log.Printf("%s sent to downloader.\n", event.Value)
+		appTeller.LogWithFields(map[string]interface{}{
+			"downloadURI":     event.Value,
+			"downloadHandler": appConfig.Downloader.Name,
+		}).Infoln("URI sent to downloader")
 
 		return nil
 	})
@@ -108,7 +142,7 @@ func runDownloader(ctx *cli.Context) error {
 
 	runError := scenario.RunError()
 	if runError != nil {
-		return cli.NewExitError(runError.Error(), 2)
+		appTeller.Log().Fatalln(runError)
 	}
 
 	return nil
@@ -129,27 +163,22 @@ var DownloadAndDebridCli = cli.Command{
 }
 
 func downloadAndDebrid(ctx *cli.Context) error {
-	uri := ctx.Args().First()
-	if uri == "" {
-		return cli.NewExitError("No URI given", 1)
+	// Loading command requirements
+	loadError := loadRequirements()
+	if loadError != nil {
+		return cli.NewExitError(loadError.Error(), 1)
 	}
 
-	appConfig, configError := config.LoadFromFile(appConfigPath)
-	if configError != nil {
-		return cli.NewExitError(configError.Error(), 1)
+	uri := ctx.Args().First()
+	if uri == "" {
+		appTeller.Log().Fatalln("No URI given")
 	}
 
 	event := &dispatcher.Event{Origin: "cli", Value: uri}
 
 	story := &dispatcher.ChristopherStory{}
 	story.SetConfig(appConfig).EnableDebrider().EnableDownloader()
-
-	// Setting a custom notifier
-	story.SetNotifier(func(event *dispatcher.Event) error {
-		log.Printf("Download started with ID %s\n", event.Value)
-
-		return nil
-	})
+	story.SetTeller(appTeller)
 
 	scenario := story.Scenario()
 
@@ -159,7 +188,7 @@ func downloadAndDebrid(ctx *cli.Context) error {
 
 	runError := scenario.RunError()
 	if runError != nil {
-		return cli.NewExitError(runError.Error(), 2)
+		appTeller.Log().Fatalln(runError)
 	}
 
 	return nil
@@ -179,10 +208,10 @@ var FeedWatcherCli = cli.Command{
 }
 
 func runFeedWatcher(ctx *cli.Context) error {
-	// Loading config
-	appConfig, configError := config.LoadFromFile(appConfigPath)
-	if configError != nil {
-		return cli.NewExitError(configError.Error(), 1)
+	// Loading command requirements
+	loadError := loadRequirements()
+	if loadError != nil {
+		return cli.NewExitError(loadError.Error(), 1)
 	}
 
 	// Building FeedWatcher from config
@@ -190,8 +219,11 @@ func runFeedWatcher(ctx *cli.Context) error {
 	watchInterval := time.Duration(feedWatcherConfig.WatchInterval) * time.Minute
 	feedWatcher, feedWatcherError := feedwatcher.NewFeedWatcher(watchInterval)
 	if feedWatcherError != nil {
-		return cli.NewExitError(feedWatcherError.Error(), 1)
+		appTeller.Log().Fatalln(feedWatcherError)
 	}
+
+	// Adding Teller
+	feedWatcher.SetTeller(appTeller)
 
 	// Getting feeds
 	configFeeds := feedWatcherConfig.Feeds
@@ -217,13 +249,7 @@ func runFeedWatcher(ctx *cli.Context) error {
 	// Using default story to process new links
 	story := &dispatcher.ChristopherStory{}
 	story.SetConfig(appConfig).EnableDebrider().EnableDownloader()
-
-	// Setting a custom log notifier
-	story.SetNotifier(func(event *dispatcher.Event) error {
-		log.Printf("Download started with ID %s\n", event.Value)
-
-		return nil
-	})
+	story.SetTeller(appTeller)
 
 	scenario := story.Scenario()
 	scenario.SetInitialStep("config")
@@ -231,16 +257,15 @@ func runFeedWatcher(ctx *cli.Context) error {
 	feedWatcher.Scenario = scenario
 
 	// Running FeedWatcher for eternity
-	log.Println("Starting FeedWatcher")
 	runSummary, runError := feedWatcher.Run(0)
 
 	// Handling run errors
 	if runError != nil {
-		return cli.NewExitError(runError.Error(), 1)
+		appTeller.Log().Fatalln(runError)
 	}
 
 	// Logging output if any (will never be reached on Run(0))
-	log.Println(runSummary)
+	appTeller.Log().Infoln(runSummary)
 
 	return nil
 }
@@ -258,15 +283,15 @@ var WebServerCli = cli.Command{
 }
 
 func runWebServer(ctx *cli.Context) error {
-	// Loading config
-	appConfig, configError := config.LoadFromFile(appConfigPath)
-	if configError != nil {
-		return cli.NewExitError(configError.Error(), 1)
+	// Loading command requirements
+	loadError := loadRequirements()
+	if loadError != nil {
+		return cli.NewExitError(loadError.Error(), 1)
 	}
 
-	webServer := webserver.NewWebServer(appConfig)
+	webServer := webserver.NewWebServer(appConfig, appTeller)
 
-	log.Fatal(webServer.Start())
+	appTeller.Log().Fatalln(webServer.Start())
 
 	return nil
 }

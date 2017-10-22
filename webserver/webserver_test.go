@@ -2,10 +2,12 @@ package webserver_test
 
 import (
 	"bytes"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 
 	"github.com/davidderus/christopher/config"
+	"github.com/davidderus/christopher/teller"
 	. "github.com/davidderus/christopher/webserver"
 
 	. "github.com/onsi/ginkgo"
@@ -24,11 +26,13 @@ const validConfigSampleFile = "../testdata/config_valid_sample.toml"
 // TODO Test basic auth
 var _ = Describe("WebServer", func() {
 	var webServer *WebServer
-	var appConfig *config.Config
 
 	BeforeEach(func() {
-		appConfig, _ = config.LoadFromFile(validConfigSampleFile)
-		webServer = NewWebServer(appConfig)
+		appConfig, _ := config.LoadFromFile(validConfigSampleFile)
+		appTeller := teller.NewTeller(appConfig.Teller.LogLevel, appConfig.Teller.LogFormatter)
+		appTeller.SetLogOutput(ioutil.Discard)
+
+		webServer = NewWebServer(appConfig, appTeller)
 		webServer.Init()
 	})
 
