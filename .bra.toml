@@ -9,7 +9,7 @@ init_cmds = [
 watch_all = true
 
 # Directories to watch
-watch_dirs = ["feedwatcher", "config", "downloader", "debrider", "dispatcher", "webserver"]
+watch_dirs = ["feedwatcher", "config", "downloader", "debrider", "dispatcher", "webserver", "teller"]
 
 # Extensions to watch
 watch_exts = [".go"]

@@ -51,7 +51,7 @@ var _ = Describe("Config", func() {
 				downloaderConfig := config.Downloader
 				Expect(downloaderConfig.Name).To(Equal("aria2"))
 				Expect(downloaderConfig.AuthInfos["token"]).To(Equal("my-good-token"))
-				Expect(downloaderConfig.AuthInfos["rpcURL"]).To(Equal("http://127.0.0.1:6800/jsonrpc"))
+				Expect(downloaderConfig.AuthInfos["rpc_url"]).To(Equal("http://127.0.0.1:6800/jsonrpc"))
 
 				// Debrider
 				By("Parsing Debrider config")
@@ -80,6 +80,11 @@ var _ = Describe("Config", func() {
 				webserverUsers := webserverConfig.Users
 				Expect(len(webserverUsers)).To(Equal(1))
 				Expect(webserverUsers[0].Name).To(Equal("johndoe"))
+
+				By("Reading log output format")
+				tellerConfig := config.Teller
+				Expect(tellerConfig.LogLevel).To(Equal("debug"))
+				Expect(tellerConfig.LogFormatter).To(Equal("text"))
 			})
 
 			It("should set some defaults for the missing values", func() {

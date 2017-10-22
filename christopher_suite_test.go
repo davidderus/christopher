@@ -39,7 +39,7 @@ var _ = Describe("Christopher", func() {
 			fwOutput := cliBuffer.String()
 
 			Expect(fwErr).To(BeNil())
-			Expect(fwOutput).To(ContainSubstring("Start feed watcher"))
+			Expect(fwOutput).To(ContainSubstring("Starts the feed watcher"))
 		})
 	})
 
@@ -52,7 +52,7 @@ var _ = Describe("Christopher", func() {
 			fwOutput := cliBuffer.String()
 
 			Expect(fwErr).To(BeNil())
-			Expect(fwOutput).To(ContainSubstring("Send an URI to the downloader"))
+			Expect(fwOutput).To(ContainSubstring("Sends an URI to the downloader"))
 		})
 	})
 
@@ -65,7 +65,7 @@ var _ = Describe("Christopher", func() {
 			fwOutput := cliBuffer.String()
 
 			Expect(fwErr).To(BeNil())
-			Expect(fwOutput).To(ContainSubstring("Debrid an URI"))
+			Expect(fwOutput).To(ContainSubstring("Debrids an URI"))
 		})
 	})
 
@@ -78,7 +78,7 @@ var _ = Describe("Christopher", func() {
 			fwOutput := cliBuffer.String()
 
 			Expect(fwErr).To(BeNil())
-			Expect(fwOutput).To(ContainSubstring("Debrid and download an URI"))
+			Expect(fwOutput).To(ContainSubstring("Debrids and downloads an URI"))
 		})
 	})
 

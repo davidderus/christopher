@@ -10,7 +10,7 @@ db_path = "/Users/tom/christopher/mybase.db"
   name = "aria2"
   [downloader.auth_infos]
     token = "my-good-token"
-    rpcURL = "http://127.0.0.1:6800/jsonrpc"
+    rpc_url = "http://127.0.0.1:6800/jsonrpc"
 
 [debrider]
   name = "AllDebrid"
@@ -30,3 +30,6 @@ db_path = "/Users/tom/christopher/mybase.db"
   [[webserver.users]]
   name = "johndoe"
   password = "6e82c19cf08634bcb89b9fc8a36e288b"
+
+[teller]
+  log_level = "debug"

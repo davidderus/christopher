@@ -1,6 +1,8 @@
-# Christopher v1.0.0-alpha.1
+# Christopher v1.0.0-alpha.2
 
 [![Build Status](https://travis-ci.org/davidderus/christopher.svg?branch=master)](https://travis-ci.org/davidderus/christopher)
+[![Go Report Card](https://goreportcard.com/badge/github.com/davidderus/christopher)](https://goreportcard.com/report/github.com/davidderus/christopher)
+[![GoDoc](https://godoc.org/github.com/davidderus/christopher?status.svg)](https://godoc.org/github.com/davidderus/christopher)
 
 ## Description
 
@@ -53,7 +55,7 @@ Christopher looks for a toml configuration file at
 
   [downloader.auth_infos]
     token = "my-good-token"
-    rpcURL = "http://127.0.0.1:6800/jsonrpc"
+    rpc_url = "http://127.0.0.1:6800/jsonrpc"
 
 # Debrider configuration (optional)
 # The debrider converts links from specific services to a downloadable link.
@@ -122,6 +124,18 @@ Christopher looks for a toml configuration file at
   # `echo -n "$username:download-helper.local:$password" | md5`
   # Also works with all the algorithms supported by HTTP Digest
   password = "36f0730e47562fbdf9b91434130f91f2"
+
+# Teller configuration (optional)
+# The Teller handles logging across the whole application.
+# It supports text and JSON logging with variables.
+[teller]
+  # A level from when the Teller must log things
+  # Default is `info`, meaning info logs and above will be shown.
+  log_level = "debug"
+
+  # The log items format
+  # Default is `text`
+  log_formatter = "json"
 ```
 
 ## Supported services
@@ -170,7 +184,7 @@ Looking at the `docker-compose.yml` file, you will see a basic example of a
 working christopher + aria2 setup. Try it with `docker-compose up`.
 
 Remember that you need to update your christopher config file with the right
-aria2 RPC token and use `http://aria2:6800/jsonrpc` as the `rpcURL`.
+aria2 RPC token and use `http://aria2:6800/jsonrpc` as the `rpc_url`.
 
 ## Licence
 

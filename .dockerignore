@@ -6,3 +6,4 @@ testdata
 .DS_Store
 Dockerfile
 docker-compose.yml
+/dist

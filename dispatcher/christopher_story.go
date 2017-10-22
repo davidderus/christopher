@@ -4,6 +4,7 @@ import (
 	"github.com/davidderus/christopher/config"
 	"github.com/davidderus/christopher/debrider"
 	"github.com/davidderus/christopher/downloader"
+	"github.com/davidderus/christopher/teller"
 )
 
 // ChristopherStory is a story to handle a new URI
@@ -24,6 +25,8 @@ type ChristopherStory struct {
 	withDownloader bool
 
 	config *config.Config
+
+	teller *teller.Teller
 }
 
 const (
@@ -55,13 +58,19 @@ func (cs *ChristopherStory) Scenario() *Scenario {
 	if cs.withDownloader {
 		afterConfigStepName = downloaderStep
 		afterDebridStepName = downloaderStep
+
+		cs.teller.Log().Debugln("Enabling downloader")
 	}
 
 	if cs.withDebrider {
 		afterConfigStepName = debridableStep
+
+		cs.teller.Log().Debugln("Enabling debrider")
 	}
 
 	scenario.From("config").To(afterConfigStepName).Do(func(_ *Event) error {
+		cs.teller.Log().Debugln("Loading config")
+
 		debriderConfig = &cs.config.Debrider
 		downloaderConfig = &cs.config.Downloader
 
@@ -73,10 +82,18 @@ func (cs *ChristopherStory) Scenario() *Scenario {
 
 		tempDebriderInstance, err = debrider.NewDebrider(debriderConfig.Name, nil)
 		if err != nil {
+			cs.teller.Log().Errorln(err)
 			return err
 		}
 
 		isDebridable = tempDebriderInstance.IsDebridable(event.Value)
+
+		if isDebridable {
+			cs.teller.LogWithFields(map[string]interface{}{
+				"debridHandler": debriderConfig.Name,
+				"initialURI":    event.Value,
+			}).Infoln("URI is debridable")
+		}
 
 		return nil
 	})
@@ -84,6 +101,7 @@ func (cs *ChristopherStory) Scenario() *Scenario {
 	scenario.From(debriderStep).To("debrided").Do(func(_ *Event) error {
 		debriderInstance, err = debrider.NewDebrider(debriderConfig.Name, debriderConfig.AuthInfos)
 		if err != nil {
+			cs.teller.Log().Errorln(err)
 			return err
 		}
 
@@ -97,8 +115,15 @@ func (cs *ChristopherStory) Scenario() *Scenario {
 
 		debridedURI, err = debriderInstance.Debrid(event.Value, nil)
 		if err != nil {
+			cs.teller.Log().Errorln(err)
 			return err
 		}
+
+		cs.teller.LogWithFields(map[string]interface{}{
+			"debridHandler": debriderConfig.Name,
+			"debridURI":     debridedURI,
+			"initialURI":    event.Value,
+		}).Debugln("URI is debrided")
 
 		event.Origin = debriderStep
 		event.Value = debridedURI
@@ -106,22 +131,31 @@ func (cs *ChristopherStory) Scenario() *Scenario {
 		return nil
 	}).If(isDebridableFunc)
 
-	scenario.From(downloaderStep).To("downloaded").Do(func(_ *Event) error {
+	scenario.From(downloaderStep).To("downloading").Do(func(_ *Event) error {
 		dlInstance, err = downloader.NewDownloader(downloaderConfig.Name, downloaderConfig.AuthInfos)
 		if err != nil {
+			cs.teller.Log().Errorln(err)
 			return err
 		}
 
 		return nil
 	})
 
-	scenario.From("downloaded").To("notified").Do(func(event *Event) error {
+	scenario.From("downloading").To("notified").Do(func(event *Event) error {
 		var downloadID string
 
 		downloadID, err = dlInstance.Download(event.Value, downloaderConfig.DownloadOptions)
 		if err != nil {
+			cs.teller.Log().Errorln(err)
 			return err
 		}
+
+		cs.teller.LogWithFields(map[string]interface{}{
+			"downloadHandler": downloaderConfig.Name,
+			"downloadID":      downloadID,
+			"downloadOptions": downloaderConfig.DownloadOptions,
+			"downloadURI":     event.Value,
+		}).Infoln("Download started")
 
 		event.Origin = downloaderStep
 		event.Value = downloadID
@@ -165,5 +199,11 @@ func (cs *ChristopherStory) EnableDownloader() *ChristopherStory {
 // SetConfig sets a given config instead of the default one
 func (cs *ChristopherStory) SetConfig(config *config.Config) *ChristopherStory {
 	cs.config = config
+	return cs
+}
+
+// SetTeller boots the story teller
+func (cs *ChristopherStory) SetTeller(teller *teller.Teller) *ChristopherStory {
+	cs.teller = teller
 	return cs
 }

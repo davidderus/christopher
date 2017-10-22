@@ -1,12 +1,14 @@
 package feedwatcher_test
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"time"
 
 	"github.com/davidderus/christopher/config"
 	. "github.com/davidderus/christopher/feedwatcher"
+	"github.com/davidderus/christopher/teller"
 
 	"github.com/mmcdole/gofeed"
 
@@ -133,6 +135,12 @@ var _ = Describe("FeedWatcher", func() {
 			// Creating a new feedWatcher
 			feedWatcher, _ := NewFeedWatcher(5 * time.Microsecond)
 
+			// Adding Teller
+			logBuffer := &bytes.Buffer{}
+			teller := teller.NewTeller("debug", "text")
+			teller.SetLogOutput(logBuffer)
+			feedWatcher.SetTeller(teller)
+
 			// Setting an artificial SinceDate
 			feedWatcher.SinceDate = time.Date(2017, time.February, 25, 0, 0, 0, 0, time.UTC)
 
@@ -148,13 +156,21 @@ var _ = Describe("FeedWatcher", func() {
 			// Running only twice (~10 microseconds max)
 			runSummary, _ := feedWatcher.Run(2)
 			Expect(runSummary).To(Equal("2 runs done, 3 items found"))
+
+			// Testing logging too
+			logString := logBuffer.String()
+
+			Expect(logString).NotTo(ContainSubstring(`level=error`))
+			Expect(logString).To(ContainSubstring(`level=info msg="3 new items found" runCount=1`))
+			Expect(logString).To(ContainSubstring(`level=info msg="0 new items found" runCount=2`))
+			Expect(logString).To(ContainSubstring(`level=debug msg="Reaching maxRunCount, breaking!"`))
 		})
 
 		It("should exit if there is no feeds", func() {
 			feedWatcher, _ := NewFeedWatcher(1 * time.Microsecond)
 			_, runError := feedWatcher.Run(1)
 
-			Expect(runError.Error()).To(Equal("Error: No feeds in config"))
+			Expect(runError.Error()).To(Equal("No feeds in config"))
 		})
 	})
 })
