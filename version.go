@@ -1,3 +1,3 @@
 package main
 
-const christopherVersion = "1.0.0-alpha.4"
+const christopherVersion = "1.0.0-alpha.5"
