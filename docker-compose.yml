@@ -11,7 +11,7 @@ services:
       - '8080:8080'
     volumes:
       - $HOME/.config/christopher/config.toml:/christopher/config.toml:ro
-    links:
+    depends_on:
       - aria2
 
   watcher:
@@ -21,7 +21,7 @@ services:
     restart: always
     volumes:
       - $HOME/.config/christopher/config.toml:/christopher/config.toml:ro
-    links:
+    depends_on:
       - aria2
 
   aria2:
