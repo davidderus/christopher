@@ -26,11 +26,6 @@
 			"Rev": "349dd0209470eabd9514242c688c403c0926d266"
 		},
 		{
-			"ImportPath": "github.com/davidderus/dicam/config",
-			"Comment": "0.5.0-2-g5d3ae40",
-			"Rev": "5d3ae40d7b371537cba51d0209e40f82520dfe2b"
-		},
-		{
 			"ImportPath": "github.com/dnaeon/go-vcr/cassette",
 			"Rev": "87d4990451a858cc210399285be976e63bc3c364"
 		},
