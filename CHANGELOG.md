@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.0.0-alpha.3 - 2018/01/21
+
+- Fixing wrong shasum error for bootstrap css and js
+
 ## v1.0.0-alpha.2 - 2017/10/22
 
 - Renaming config key `rpcURL` to `rpc_url` for consistency
