@@ -1,4 +1,4 @@
-# Christopher v1.0.0-alpha.2
+# Christopher v1.0.0-alpha.3
 
 [![Build Status](https://travis-ci.org/davidderus/christopher.svg?branch=master)](https://travis-ci.org/davidderus/christopher)
 [![Go Report Card](https://goreportcard.com/badge/github.com/davidderus/christopher)](https://goreportcard.com/report/github.com/davidderus/christopher)
