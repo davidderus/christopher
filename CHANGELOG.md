@@ -1,5 +1,10 @@
 # Changelog
 
+## v1.0.0-alpha.4 - 2018/01/21
+
+- Adding execute bit to deploy script
+- Removing osx from travis env config (the tests were always failing)
+
 ## v1.0.0-alpha.3 - 2018/01/21
 
 - Fixing wrong shasum error for bootstrap css and js
