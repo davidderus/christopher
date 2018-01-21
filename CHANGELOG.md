@@ -1,5 +1,9 @@
 # Changelog
 
+## v1.0.0-alpha.5 - 2018/01/21
+
+- Using goreleaser default script and not relying on go for deploy
+
 ## v1.0.0-alpha.4 - 2018/01/21
 
 - Adding execute bit to deploy script
