@@ -1,4 +1,4 @@
-# Christopher v1.0.0-alpha.2
+# Christopher v1.0.0-alpha.3
 
 [![Build Status](https://travis-ci.org/davidderus/christopher.svg?branch=master)](https://travis-ci.org/davidderus/christopher)
 [![Go Report Card](https://goreportcard.com/badge/github.com/davidderus/christopher)](https://goreportcard.com/report/github.com/davidderus/christopher)
@@ -158,7 +158,7 @@ Do not hesitate to write a PR with some tests to add more.
 
 ## Upcoming features
 
-- [ ] A complete logger with log levels handling
+- [x] A complete logger with log levels handling
 - [ ] A download history to avoid duplicates and show status in webserver
 - [ ] A successful download notifier (_push or email_)
 - [ ] A lighter Docker Image
@@ -185,6 +185,10 @@ working christopher + aria2 setup. Try it with `docker-compose up`.
 
 Remember that you need to update your christopher config file with the right
 aria2 RPC token and use `http://aria2:6800/jsonrpc` as the `rpc_url`.
+
+## Development
+
+To build bindata file, use `go-bindata -pkg webserver -o webserver/bindata.go -prefix webserver webserver/templates/`.
 
 ## Licence
 
