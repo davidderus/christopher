@@ -2,6 +2,8 @@
 
 ## v1.0.0-alpha.5 - 2018/01/21
 
+- Not using Travis for cross-platform deployment
+- Fixing invalid yml indent in goreleaser config
 - Using goreleaser default script and not relying on go for deploy
 
 ## v1.0.0-alpha.4 - 2018/01/21
