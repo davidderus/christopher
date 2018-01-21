@@ -10,5 +10,9 @@ builds:
     goarm:
       - 6
       - 7
-archive:
+
+      archive:
   format: binary
+
+release:
+  prerelease: true
