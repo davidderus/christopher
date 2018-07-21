@@ -6,7 +6,7 @@ interactions:
     body: ""
     form: {}
     headers: {}
-    url: https://alldebrid.com/register/?action=login&login_login=wrong-username&login_password=wrong-password&returnpage=%2Faccount%2F
+    url: https://alldebrid.com/register/?action=login&login_login=wrong-username&login_password=wrong-password&returnpage=account%2F
     method: GET
   response:
     body: ""

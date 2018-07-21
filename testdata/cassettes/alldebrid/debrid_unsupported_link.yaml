@@ -6,7 +6,7 @@ interactions:
     body: ""
     form: {}
     headers: {}
-    url: https://alldebrid.com/register/?action=login&login_login=valid-username&login_password=valid-password&returnpage=%2Faccount%2F
+    url: https://alldebrid.com/register/?action=login&login_login=valid-username&login_password=valid-password&returnpage=account%2F
     method: GET
   response:
     body: ""
@@ -33,7 +33,7 @@ interactions:
       Cookie:
       - lang=en; uid=000000
       Referer:
-      - https://alldebrid.com/register/?action=login&login_login=valid-username&login_password=valid-password&returnpage=%2Faccount%2F
+      - https://alldebrid.com/register/?action=login&login_login=valid-username&login_password=valid-password&returnpage=account%2F
     url: https://alldebrid.com/account/
     method: GET
   response:
