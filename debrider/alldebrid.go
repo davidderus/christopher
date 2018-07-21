@@ -35,7 +35,7 @@ type allDebridResponse struct {
 const (
 	defaultBaseURL     = "https://alldebrid.com"
 	authPath           = "register/"
-	returnPath         = "/account/"
+	returnPath         = "account/"
 	debridPath         = "service.php"
 	supportedHostsPath = "extension/getSupportedHosts.php"
 	defaultTimeOut     = 10 * time.Second
@@ -94,7 +94,7 @@ func (ad *AllDebrid) Auth(infos map[string]string) error {
 	defer response.Body.Close()
 
 	newLocation := response.Request.URL.String()
-	if newLocation != fmt.Sprintf("%s%s", ad.baseURL, returnPath) {
+	if newLocation != fmt.Sprintf("%s/%s", ad.baseURL, returnPath) {
 		return errors.New("Invalid credentials")
 	}
 
