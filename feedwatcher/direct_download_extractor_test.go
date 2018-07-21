@@ -26,6 +26,7 @@ var _ = Describe("FeedExtractor", func() {
 				feedExtractor := &DirectDownload{}
 				feedExtractor.Init()
 				Expect(extractor).To(BeEquivalentTo(feedExtractor))
+				Expect(extractorError).To(BeNil())
 			})
 
 			Context("Without any config", func() {

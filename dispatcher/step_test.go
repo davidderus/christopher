@@ -20,13 +20,9 @@ var _ = Describe("Step", func() {
 	Describe(".If()", func() {
 		Context("without the If() condition", func() {
 			It("should execute step2", func() {
-				var isValid bool
-
 				baseString := "Hello"
 
 				currentScenario.From("step1").To("step2").Do(func(_ *Event) error {
-					isValid = true
-
 					return nil
 				})
 
