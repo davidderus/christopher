@@ -10,7 +10,7 @@
 
 _Why?_ After spending some time building my own download helper, I realised that reinventing the wheel is less efficient than using an existing solution and just spending time on configuration and updates.
 
-If you want to go on this project, just fork it :)
+If you want to use and update this project, just fork it :)
 
 ## Description
 
