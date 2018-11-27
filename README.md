@@ -4,6 +4,14 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/davidderus/christopher)](https://goreportcard.com/report/github.com/davidderus/christopher)
 [![GoDoc](https://godoc.org/github.com/davidderus/christopher?status.svg)](https://godoc.org/github.com/davidderus/christopher)
 
+## Disclaimer
+
+⚠️ This app is not maintained anymore ⚠️
+
+_Why?_ After spending some time building my own download helper, I realised that reinventing the wheel is less efficient than using an existing solution and just spending time on configuration and updates.
+
+If you want to go on this project, just fork it :)
+
 ## Description
 
 Christopher is your everyday direct-download companion.
